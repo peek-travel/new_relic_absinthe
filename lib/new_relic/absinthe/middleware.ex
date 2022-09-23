@@ -107,8 +107,14 @@ defmodule NewRelic.Absinthe.Middleware do
   defp instrument_operation(_, res) do
     operation = List.last(res.path)
 
+    operation_name =
+      case res do
+        %{definition: %{schema_node: %{name: <<_::binary>> = name}}} -> name
+        _otherwise -> nil
+      end
+
     framework_name =
-      case operation.name do
+      case operation_name do
         nil -> "/Absinthe/#{inspect(res.schema)}/#{operation.type}"
         name -> "/Absinthe/#{inspect(res.schema)}/#{operation.type}/#{name}"
       end
@@ -117,7 +123,7 @@ defmodule NewRelic.Absinthe.Middleware do
       "absinthe.schema": inspect(res.schema),
       "absinthe.query_complexity": operation.complexity,
       "absinthe.operation_type": operation.type,
-      "absinthe.operation_name": operation.name,
+      "absinthe.operation_name": operation_name,
       framework_name: framework_name
     )
   end

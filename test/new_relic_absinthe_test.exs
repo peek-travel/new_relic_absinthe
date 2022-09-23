@@ -64,7 +64,7 @@ defmodule NewRelicAbsintheTest do
     [[_, tx_event]] = gather_harvest(Collector.TransactionEvent.Harvester)
 
     assert tx_event[:path] == "/graphql"
-    assert tx_event[:"absinthe.operation_name"] == "HelloWorld"
+    assert tx_event[:"absinthe.operation_name"] == "hello"
 
     spans = gather_harvest(Collector.SpanEvent.Harvester)
 
